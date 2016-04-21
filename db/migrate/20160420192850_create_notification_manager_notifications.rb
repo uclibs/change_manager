@@ -2,7 +2,7 @@ class CreateNotificationManagerNotifications < ActiveRecord::Migration
   def change
     create_table :notification_manager_notifications do |t|
       t.string :change
-      t.datetime :time_changed
+      t.datetime :time_changed #unnecessary
       t.boolean :change_cancelled
       t.datetime :change_notified
       t.string :change_owner

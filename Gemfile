@@ -13,5 +13,7 @@ gemspec
 gem 'resque'
 gem 'resque-web', require: 'resque_web'
 
+gem 'byebug'
+
 # To use debugger
-# gem 'debugger'
+#gem 'debugger'

@@ -4,19 +4,13 @@ module NotificationManager
   class NotificationsController < ApplicationController
     before_action :set_notification, only: [:show, :edit, :update, :destroy]
 
-  
+
     def new
       @notification = Notification.new
     end
 
     def create
-      @notification = Notification.new(notification_params)
-
-      if @notification.save
-        redirect_to @notification, notice: 'Notification was successfully created.'
-      else
-        render action: 'new'
-      end
+      byebug
     end
 
     def update
