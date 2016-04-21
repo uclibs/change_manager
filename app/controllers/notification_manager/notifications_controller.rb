@@ -4,25 +4,11 @@ module NotificationManager
   class NotificationsController < ApplicationController
     before_action :set_notification, only: [:show, :edit, :update, :destroy]
 
-    # GET /notifications
-    def index
-      @notifications = Notification.all
-    end
 
-    # GET /notifications/1
-    def show
-    end
-
-    # GET /notifications/new
     def new
       @notification = Notification.new
     end
 
-    # GET /notifications/1/edit
-    def edit
-    end
-
-    # POST /notifications
     def create
       @notification = Notification.new(notification_params)
 
@@ -33,7 +19,6 @@ module NotificationManager
       end
     end
 
-    # PATCH/PUT /notifications/1
     def update
       if @notification.update(notification_params)
         redirect_to @notification, notice: 'Notification was successfully updated.'
@@ -41,24 +26,32 @@ module NotificationManager
         render action: 'edit'
       end
     end
+    
+    #method to do the create method + starting worker
 
-    # DELETE /notifications/1
     def destroy
       @notification.destroy
       redirect_to notifications_url, notice: 'Notification was successfully destroyed.'
     end
 
-    def send_emails(owner, target, change_type, context)
+    def send_emails(constructed_email)
       # send the actual email
+      constructed_email.deliver
     end
 
-    def construct_email(changes)
+    def construct_email(target_email, changes)
       #use a passed array/hash type to construct the email body for all 
       #changes concerning a user
+      body = prepare_body(changes)
+      #mailer here
     end
+    def prepare_body(changes)
 
-    def start_worker(change_id, delay, delay_type)
+    end
+# dont need this
+    def queue_job(change_id, delay, delay_type)
       # start the redis worker with needed delay
+      Resque.enqueue(MakeChange, change_id, delay, delay_type)
     end
 
     def cancel_change(change_id)
