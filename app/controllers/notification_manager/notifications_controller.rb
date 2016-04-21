@@ -4,7 +4,7 @@ module NotificationManager
   class NotificationsController < ApplicationController
     before_action :set_notification, only: [:show, :edit, :update, :destroy]
 
-
+  
     def new
       @notification = Notification.new
     end
