@@ -3,7 +3,8 @@ class MakeChange
 		:notification
 	end
 
-	def self.perform
-		puts 'change is made'
-		# NotificationManager::Manager.notify(change_id)
+	def self.perform(change_id)
+		puts 'change is made to ' + change_id.to_s
+		NotificationManager::Manager.notify(change_id)
 	end
+end
