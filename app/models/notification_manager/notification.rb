@@ -13,6 +13,9 @@ module NotificationManager
 				  		   change_cancelled: cancelled})
   		foo.id
   	end
+  	def similiar?
+  		true
+  	end
 
   end
 end
