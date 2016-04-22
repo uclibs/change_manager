@@ -1,10 +1,9 @@
 module NotificationManager
 	class Manager
 		# NotificationManager::Manager.notification(args)
-		def self.notification(change_target:, change_owner:, change:, context:)
-			# NotificationManager::Notification.new_notification
-			# queue_job(change_id, delay, delay_type)
-			
+		def self.notification(change_owner, change_made, context, change_target)
+			change_id = NotificationManager::Notification.new_notification(change_owner, change_made, context, change_target)
+			queue_job(change_id, 10, 'minutes')
 
 		end
 
@@ -32,9 +31,9 @@ module NotificationManager
 	    	#will need helper methods here to write the different changes
 	    end
 	# dont need this
-	    def queue_job(change_id, delay = 'make', delay_type = 'defaults')
+	    def queue_job(change_id, delay = 5)
 	      # start the redis worker with needed delay
-	      Resque.enqueue(MakeChange, change_id, delay, delay_type)
+	      Resque.enqueue_at(delay.minutes.from_now, MakeChange, change_id)
 	    end
 
 	    def cancel_change(change_id)
