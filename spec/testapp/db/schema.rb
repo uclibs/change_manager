@@ -15,7 +15,6 @@ ActiveRecord::Schema.define(version: 20160420192850) do
 
   create_table "notification_manager_notifications", force: true do |t|
     t.string   "change"
-    t.datetime "time_changed"
     t.boolean  "change_cancelled"
     t.datetime "change_notified"
     t.string   "change_owner"

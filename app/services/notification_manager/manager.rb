@@ -7,6 +7,7 @@ module NotificationManager
 			Resque.enqueue(MakeChange, change_id)
 		end
 
+		# run populate_test_data from console
 		def self.notify(change_id)
 			# gather all changes with same target and owner
 			change = Notification.find(change_id)
@@ -14,18 +15,25 @@ module NotificationManager
 			# collection/hash/array of changes -> construct_email(args)
 			# send_email(construct_email(similar_changes))
 			puts 'the notify method was called'
+			if similar_changes
+				puts 'the changes have been grouped'
+			end
 		end
 
 		def self.group_similar_changes(owner, target, context = nil)
+			# populate database with preset test data
+
 			# long query where it selects all rows where change_owner and change_target are the same as original
 			# also where cancelled is false
 			# determine if cancelled (yaml)
 			# if cancelled (do nothing)
 			similar_changes = Notification.where(change_owner: owner, change_target: target, change_cancelled: false)
 			similar_changes.each do |change|
-
+				unless change.change_cancelled == false || change.change_cancelled.nil?
+					similar_changes.delete(change)
+				end
 			end
-			byebug
+			return similar_changes
 		end
 
 		def send_email(constructed_email)
@@ -53,6 +61,13 @@ module NotificationManager
 
 		  # cancel the change in the model
 		  # notification.change_cancelled = true
+		end
+
+		def self.populate_test_data
+			NotificationManager::Manager.notification('kyle', 'change1', 'work_id1', 'james')
+			NotificationManager::Manager.notification('james', 'change2', 'work_id2', 'kyle')
+			NotificationManager::Manager.notification('linda', 'change3', 'work_id3', 'james')
+			NotificationManager::Manager.notification('glen', 'change4', 'work_id4', 'linda')
 		end
 	end
 end
