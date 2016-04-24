@@ -7,9 +7,9 @@ require "notification_manager/version"
 Gem::Specification.new do |s|
   s.name        = "notification_manager"
   s.version     = NotificationManager::VERSION
-  s.authors     = ["TODO: Your name"]
-  s.email       = ["TODO: Your email"]
-  s.homepage    = "TODO"
+  s.authors     = ["Kyle Lawhorn"]
+  s.email       = ["lawhorkl@mail.uc.edu"]
+  s.homepage    = "http://www.thegeekycoder.com"
   s.summary     = "TODO: Summary of NotificationManager."
   s.description = "TODO: Description of NotificationManager."
 
