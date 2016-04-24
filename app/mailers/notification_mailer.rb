@@ -14,6 +14,7 @@ module NotificationManager
 			constructed_email.deliver
 		end
 
+		private
 		def prepare_body(changes)
 			header = 'begin table html here'
 			body

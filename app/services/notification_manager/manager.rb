@@ -16,7 +16,6 @@ module NotificationManager
 			# collection/hash/array of changes -> construct_email(args)
 			# send_email(construct_email(similar_changes))
 			puts 'the notify method was called'
-
 		end
 
 		def self.group_similar_changes(owner, target, context = nil)
@@ -28,7 +27,7 @@ module NotificationManager
 			# if cancelled (do nothing)
 			similar_changes = Notification.where(change_owner: owner, change_target: target, change_cancelled: false)
 			similar_changes.each do |change|
-				unless change.change_cancelled == false || change.change_cancelled.nil?
+				unless !change.cancelled? || change.change_cancelled.nil?
 					similar_changes.delete(change)
 				end
 			end

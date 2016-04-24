@@ -19,5 +19,9 @@ module NotificationManager
       self.save
     end
 
+    def cancelled?
+      self.change_cancelled
+    end
+    
   end
 end

@@ -7,7 +7,7 @@ class MakeChange
 		# sleep 60
 		puts 'job started'
 		# byebug
-		unless NotificationManager::Notification.find(change_id).change_cancelled == true
+		unless NotificationManager::Notification.find(change_id).cancelled?
 			puts 'change is made to ' + change_id.to_s if NotificationManager::Manager.notify(change_id)
 		end
 		puts 'job finished'
