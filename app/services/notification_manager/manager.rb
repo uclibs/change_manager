@@ -15,9 +15,7 @@ module NotificationManager
 			# collection/hash/array of changes -> construct_email(args)
 			# send_email(construct_email(similar_changes))
 			puts 'the notify method was called'
-			if similar_changes
-				puts 'the changes have been grouped'
-			end
+
 		end
 
 		def self.group_similar_changes(owner, target, context = nil)
@@ -29,38 +27,35 @@ module NotificationManager
 			# if cancelled (do nothing)
 			similar_changes = Notification.where(change_owner: owner, change_target: target, change_cancelled: false)
 			similar_changes.each do |change|
-				unless change.change_cancelled == false || change.change_cancelled.nil?
+				if change.change_cancelled == false || change.change_cancelled.nil?
+					change.cancel
+
+				else
 					similar_changes.delete(change)
 				end
 			end
 			return similar_changes
 		end
 
-		def send_email(constructed_email)
-		  # send the actual email
-		  constructed_email.deliver
-		end
-
 		def construct_email(target_email, changes)
+			@email = target_email
 		  #use a passed array/hash type to construct the email body for all 
 		  #changes concerning a user
 		  body = prepare_body(changes)
 		  #mailer here
 		end
+
 		def prepare_body(changes)
 			#create html needed for the table with loop
+			changes.each do |change|
+				#create a template for the mailer and include all this in it
+			end
 			#will need helper methods here to write the different changes
 		end
-		# dont need this
-		def queue_job(change_id)
-		  # start the redis worker with needed delay
-		  Resque.enqueue(MakeChange, change_id)
-		end
 
-		def cancel_change(change_id)
-
-		  # cancel the change in the model
-		  # notification.change_cancelled = true
+		def send_email(constructed_email)
+		  # send the actual email
+		  constructed_email.deliver
 		end
 
 		def self.populate_test_data

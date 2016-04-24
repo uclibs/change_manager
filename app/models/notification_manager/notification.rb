@@ -13,9 +13,11 @@ module NotificationManager
 				  		   change_cancelled: cancelled})
   		foo.id
   	end
-  	def similiar?
-  		true
-  	end
+
+    def cancel
+      self.change_cancelled = true
+      self.save
+    end
 
   end
 end
