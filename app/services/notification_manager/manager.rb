@@ -12,7 +12,7 @@ module NotificationManager
 			# gather all changes with same target and owner
 			change = Notification.find(change_id)
 			similar_changes = group_similar_changes(change.change_owner, change.change_target, change.change_context)
-			byebug
+			# byebug
 			# collection/hash/array of changes -> construct_email(args)
 			# send_email(construct_email(similar_changes))
 			puts 'the notify method was called'

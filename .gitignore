@@ -8,3 +8,4 @@ spec/testapp/tmp/
 spec/testapp/.sass-cache
 .DS_Store
 .byebug_history
+dump.rdb
