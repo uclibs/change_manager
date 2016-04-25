@@ -11,7 +11,11 @@ module NotificationManager
 		def self.notify(change_id)
 			# gather all changes with same target and owner
 			change = Notification.find(change_id)
-			similar_changes = group_similar_changes(change.change_owner, change.change_target, change.change_context)
+			similar_changes = group_similar_changes(
+				change.change_owner, 
+				change.change_target, 
+				change.change_context
+				)
 			# byebug
 			# collection/hash/array of changes -> construct_email(args)
 			# send_email(construct_email(similar_changes))
@@ -21,11 +25,18 @@ module NotificationManager
 		def self.group_similar_changes(owner, target, context = nil)
 			# populate database with preset test data
 
-			# long query where it selects all rows where change_owner and change_target are the same as original
+			# long query where it selects all rows where change_owner and change_target 
+			# are the same as original
+			
 			# also where cancelled is false
+			
 			# determine if cancelled (yaml)
-			# if cancelled (do nothing)
-			similar_changes = Notification.where(change_owner: owner, change_target: target, change_cancelled: false)
+				# if cancelled (do nothing)
+			similar_changes = Notification.where(
+				change_owner: owner, 
+				change_target: target, 
+				change_cancelled: false
+				)
 			similar_changes.each do |change|
 				unless !change.cancelled? || change.change_cancelled.nil?
 					similar_changes.delete(change)

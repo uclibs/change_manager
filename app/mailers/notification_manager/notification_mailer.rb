@@ -2,11 +2,11 @@ module NotificationManager
 	class NotificationMailer < ActionMailer::Base
 		
 		def construct_email(changes)
-			body = prepare_body(changes)
 			mail(
 				to: changes.first.change_target,
 				from: changes.first.change_owner,
-				subject: 'Updates from Scholar@UC'
+				subject: 'Updates from Scholar@UC',
+				body: prepare_body(changes)
 				)
 		end
 
@@ -16,11 +16,16 @@ module NotificationManager
 
 		private
 		def prepare_body(changes)
-			header = 'begin table html here'
+			header = '<table>'
 			body
-			footer = 'begin table footer here'
+			footer = '</table>'
 			changes.each do |change|
-				body + '<tr><td>' + '</td><td>' + '</td><td>' + '</td><td>' + '</td></tr>'
+				#may need a look up method from curate here
+				body + '<tr><td>' + 
+				change.change_owner + '</td><td>' + 
+				change.change_context + '</td><td>' + 
+				change.change_target + '</td><td>' + 
+				change.created_at + '</td></tr>'
 			end
 			content = header + body + footer
 		end
