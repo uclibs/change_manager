@@ -8,6 +8,7 @@ module NotificationManager
   		# return object id
   		foo = self.create({
         change_owner: owner, 
+        # change this to change_type
 				change: change_made, 
 				change_context: context, 
 				change_target: target, 
