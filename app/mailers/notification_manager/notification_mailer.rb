@@ -15,17 +15,17 @@ module NotificationManager
 		end
 
 		private
-		def prepare_body(changes)
+		def self.prepare_body(changes)
 			header = '<table>'
-			body
+			body = ''
 			footer = '</table>'
 			changes.each do |change|
 				#may need a look up method from curate here
-				body + '<tr><td>' + 
+				body += '<tr><td>' + 
 				change.change_owner + '</td><td>' + 
 				change.change_context + '</td><td>' + 
 				change.change_target + '</td><td>' + 
-				change.created_at + '</td></tr>'
+				change.created_at.to_s + '</td></tr>'
 			end
 			content = header + body + footer
 		end
