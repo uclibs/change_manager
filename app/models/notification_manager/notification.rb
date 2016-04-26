@@ -9,10 +9,10 @@ module NotificationManager
   		foo = self.create({
         change_owner: owner, 
         # change this to change_type
-				change: change_made, 
-				change_context: context, 
-				change_target: target, 
-				change_cancelled: cancelled
+        change: change_made, 
+        change_context: context, 
+        change_target: target, 
+        change_cancelled: cancelled
         })
   		foo.id
   	end
