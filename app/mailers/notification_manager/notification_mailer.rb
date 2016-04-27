@@ -2,11 +2,11 @@ module NotificationManager
 	class NotificationMailer < ActionMailer::Base
 		
 		def construct_email(changes)
+			@body = prepare_body(changes)
 			mail(
 				to: changes.first.change_target,
 				from: changes.first.change_owner,
 				subject: 'Updates from Scholar@UC',
-				body: prepare_body(changes)
 				)
 		end
 
@@ -14,9 +14,8 @@ module NotificationManager
 			constructed_email.deliver
 		end
 
-		private
-		def self.prepare_body(changes)
-			header = '<table>'
+		def prepare_body(changes)
+			header = '<table><th><td>Change Owner</td><td>Change Context</td><td>Change</td><td>Time</td></th>'
 			body = ''
 			footer = '</table>'
 			changes.each do |change|
@@ -24,7 +23,7 @@ module NotificationManager
 				body += '<tr><td>' + 
 				change.change_owner + '</td><td>' + 
 				change.change_context + '</td><td>' + 
-				change.change_target + '</td><td>' + 
+				change.change + '</td><td>' + 
 				change.created_at.to_s + '</td></tr>'
 			end
 			content = header + body + footer

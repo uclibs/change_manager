@@ -17,7 +17,11 @@ module NotificationManager
     it 'should have a change_type' do
     	FactoryGirl.build(:notification, change: nil).should_not be_valid
     end
+    it 'should be initialized as false' do
+        FactoryGirl.build(:notification).change_cancelled.should == false
+    end
     
+    # seperate describe blocks, wrap in context
     describe 'instance method' do
     	let(:notification) { FactoryGirl.create(:notification) }
     	let(:cancelled_notification) { FactoryGirl.create(:notification)}

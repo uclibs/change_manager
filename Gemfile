@@ -11,6 +11,7 @@ gemspec
 # your gem to rubygems.org.
 
 gem 'resque'
+gem 'resque-scheduler'
 gem 'resque-web', require: 'resque_web'
 
 gem 'byebug'
