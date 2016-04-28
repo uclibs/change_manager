@@ -4,18 +4,19 @@ module NotificationManager
 		def self.notification(change_owner, change_made, context, change_target)
 			change_id = Notification.new_notification(change_owner, change_made, context, change_target)
 			# queue_job(change_id)
-			byebug
-			Resque.enqueue_in(
-				30.seconds,
-				MakeChange,
-				change_id
-				)
+			Resque.enqueue(MakeChange, change_id)
+			# Resque.enqueue_in(
+			# 	30.seconds,
+			# 	MakeChange,
+			# 	change_id
+			# 	)
 		end
 
 		# run populate_test_data from console
 		def self.notify(change_id)
 			# gather all changes with same target and owner
 			# put cancelled check here
+			puts 'the notify method was called'
 			unless NotificationManager::Notification.find(change_id).cancelled?
 				change = Notification.find(change_id)
 				similar_changes = group_similar_changes(
@@ -24,10 +25,12 @@ module NotificationManager
 					# not needed? 
 					change.change_context
 					)
-				# byebug
 				# collection/hash/array of changes -> construct_email(args)
-				# send_email(construct_email(similar_changes))
-				puts 'the notify method was called'
+				mailer = NotificationManager::NotificationMailer
+				byebug
+				if mailer.send_email(mailer.construct_email(similar_changes))
+					puts 'the email sent'
+				end
 			end
 		end
 
