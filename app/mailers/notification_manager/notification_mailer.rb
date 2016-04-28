@@ -1,3 +1,5 @@
+require 'cgi'
+
 module NotificationManager
 	class NotificationMailer < ActionMailer::Base
 		
