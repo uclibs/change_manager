@@ -4,7 +4,12 @@ module NotificationManager
 		def self.notification(change_owner, change_made, context, change_target)
 			change_id = Notification.new_notification(change_owner, change_made, context, change_target)
 			# queue_job(change_id)
-			Resque.enqueue(MakeChange, change_id)
+			byebug
+			Resque.enqueue_in(
+				30.seconds,
+				MakeChange,
+				change_id
+				)
 		end
 
 		# run populate_test_data from console
@@ -23,6 +28,7 @@ module NotificationManager
 				# collection/hash/array of changes -> construct_email(args)
 				# send_email(construct_email(similar_changes))
 				puts 'the notify method was called'
+			end
 		end
 
 		def self.group_similar_changes(owner, target, context = nil)
