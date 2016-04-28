@@ -2,6 +2,8 @@
 require 'resque/tasks'
 require 'resque/scheduler/tasks'
 
-task "resque:setup" => :environment  do
-	ENV['QUEUE'] = '*'
+Rails.application.initialize!
+
+namespace :resque do
+	task ":setup" => :environment
 end
