@@ -1,3 +1,5 @@
+require 'yaml'
+
 module NotificationManager
   class Notification < ActiveRecord::Base
   	validates :change, :change_owner, :change_target, :change_context, presence: true
@@ -25,6 +27,15 @@ module NotificationManager
     def cancelled?
       self.change_cancelled
     end
-    
+
+    def inverse?(possible_inverse_change)
+      is_inverse = false
+      change_types = YAML.load_file(File.join(NotificationManager::Engine.root, 'config/change_types.yaml'))
+      if self.change == change_type[possible_inverse_change][1]['inverse']
+        is_inverse = true
+      end
+      return inverse
+    end
+
   end
 end

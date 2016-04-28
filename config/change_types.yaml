@@ -1,0 +1,45 @@
+added_as_delegate:
+ - added_as_delegate
+ - inverse: removed_as_delegate
+ - Added as a delegate
+removed_as_delegate:
+ - removed_as_delegate
+ - inverse: added_as_delegate
+ - Removed as a delegate
+added_as_editor:
+ - added_as_editor
+ - inverse: removed_as_editor
+ - Added as an editor
+removed_as_editor:
+ - removed_as_editor
+ - inverse: added_as_editor
+ - Removed as an editor
+added_to_group:
+ - added_to_group
+ - inverse: removed_from_group
+ - Added to a group
+removed_from_group:
+ - removed_from_group
+ - inverse: added_to_group
+ - Removed from a group
+
+
+
+ # - added_as_delegate
+ # - removed_as_delegate
+ # - added_as_editor
+ # - removed_as_editor
+ # - added_to_group
+ # - removed_from_group
+
+
+
+ # delegates:
+ #  - added_as_delegate
+ #  - removed_as_delegate
+ # editors:
+ #  - added_as_editor
+ #  - removed_as_delegate
+ # groups:
+ #  - added_to_group
+ #  - removed_from_group
