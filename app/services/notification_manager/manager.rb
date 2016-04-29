@@ -49,7 +49,7 @@ module NotificationManager
 				change_cancelled: false
 				)
 			similar_changes.each do |change|
-				cancel_polar_change(change, change.change)
+				cancel_inverse_changes(change, change.change)
 				if change.cancelled?
 					similar_changes.delete(change)
 				end
@@ -57,7 +57,7 @@ module NotificationManager
 			
 		end
 		def self.cancel_polar_change(change, change_type)
-			if change.polar_change?
+			if change.inverse?(change_type)
 				change.cancel
 			end
 		end

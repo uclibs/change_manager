@@ -1,27 +1,53 @@
 added_as_delegate:
- - added_as_delegate
- - inverse: removed_as_delegate
- - Added as a delegate
+ print: added_as_delegate
+ inverse: removed_as_delegate
+ human_readable: Added as a delegate
 removed_as_delegate:
- - removed_as_delegate
- - inverse: added_as_delegate
- - Removed as a delegate
+ print: removed_as_delegate
+ inverse: added_as_delegate
+ human_readable: Removed as a delegate
 added_as_editor:
- - added_as_editor
- - inverse: removed_as_editor
- - Added as an editor
+ print: added_as_editor
+ inverse: removed_as_editor
+ human_readable: Added as an editor
 removed_as_editor:
- - removed_as_editor
- - inverse: added_as_editor
- - Removed as an editor
+ print: removed_as_editor
+ inverse: added_as_editor
+ human_readable: Removed as an editor
 added_to_group:
- - added_to_group
- - inverse: removed_from_group
- - Added to a group
+ print: added_to_group
+ inverse: removed_from_group
+ human_readable: Added to a group
 removed_from_group:
- - removed_from_group
- - inverse: added_to_group
- - Removed from a group
+ print: removed_from_group
+ inverse: added_to_group
+ human_readable: Removed from a group
+
+# added_as_delegate:
+#  - added_as_delegate
+#  - inverse: removed_as_delegate
+#  - Added as a delegate
+# removed_as_delegate:
+#  - removed_as_delegate
+#  - inverse: added_as_delegate
+#  - Removed as a delegate
+# added_as_editor:
+#  - added_as_editor
+#  - inverse: removed_as_editor
+#  - Added as an editor
+# removed_as_editor:
+#  - removed_as_editor
+#  - inverse: added_as_editor
+#  - Removed as an editor
+# added_to_group:
+#  - added_to_group
+#  - inverse: removed_from_group
+#  - Added to a group
+# removed_from_group:
+#  - removed_from_group
+#  - inverse: added_to_group
+#  - Removed from a group
+
 
 
 
