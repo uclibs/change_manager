@@ -2,39 +2,39 @@ require 'yaml'
 
 module NotificationManager
   class Notification < ActiveRecord::Base
-  	validates :change, :change_owner, :change_target, :change_context, presence: true
+  	validates :change_type, :owner, :target, :context, presence: true
 
-  	def self.new_notification(owner, change_made, context, target, cancelled = false)
+  	def self.new_notification(owner, change_type, context, target, cancelled = false)
   		# needs a spec
   		# create object in db
   		# return object id
   		foo = self.create({
-        change_owner: owner, 
-        # change this to change_type
-        change: change_made, 
-        change_context: context, 
-        change_target: target, 
-        change_cancelled: cancelled
+        owner: owner, 
+        change_type: change_type, 
+        context: context, 
+        target: target, 
+        cancelled: cancelled
         })
   		foo.id
   	end
 
     def cancel
-      self.change_cancelled = true
+      self.cancelled = true
       self.save
     end
 
     def cancelled?
-      self.change_cancelled
+      self.cancelled
     end
 
-    def inverse?(possible_inverse_change)
+    def inverse_of?(possible_inverse_change)
       is_inverse = false
-      change_types = YAML.load_file(File.join(NotificationManager::Engine.root, 'config/change_types.yaml'))
-      if self.change == change_type[possible_inverse_change]['inverse']
+      @change_types ||= YAML.load_file(File.join(NotificationManager::Engine.root, 'config/change_types.yaml'))
+      if self.change_type == @change_types[possible_inverse_change]['inverse']
         is_inverse = true
+        puts 'found inverse change' + self.owner + ' ' + self.change_type
       end
-      return inverse
+      return is_inverse
     end
 
   end

@@ -1,8 +1,8 @@
 module NotificationManager
 	class Manager
 		# NotificationManager::Manager.notification(args)
-		def self.notification(change_owner, change_made, context, change_target)
-			change_id = Notification.new_notification(change_owner, change_made, context, change_target)
+		def self.notification(owner, change_type, context, target)
+			change_id = Notification.new_notification(owner, change_type, context, target)
 			# queue_job(change_id)
 			Resque.enqueue(MakeChange, change_id)
 			# Resque.enqueue_in(
@@ -14,18 +14,12 @@ module NotificationManager
 
 		# run populate_test_data from console
 		def self.notify(change_id)
-			# gather all changes with same target and owner
-			# put cancelled check here
 			puts 'the notify method was called'
-			# how to cancel it initially?
 			unless NotificationManager::Notification.find(change_id).cancelled?
 				change = Notification.find(change_id)
-				similar_changes = group_similar_changes(
-					change.change_owner, 
-					change.change_target,
-					change.change
-					)
-				# collection/hash/array of changes -> construct_email(args)
+				byebug
+				similar_changes = group_similar_changes(change.owner, change.target, change.change_type)
+				puts 'group_similar_changes finished. size: ' + similar_changes.length.to_s
 				mailer = NotificationManager::NotificationMailer
 				if mailer.send_email(mailer.construct_email(similar_changes))
 					puts 'the email sent'
@@ -34,39 +28,45 @@ module NotificationManager
 		end
 
 		def self.group_similar_changes(owner, target, change_type)
-			# populate database with preset test data
-
-			# long query where it selects all rows where change_owner and change_target 
-			# are the same as original
-			
-			# also where cancelled is false
-			
-			# determine if cancelled (yaml)
-				# if cancelled (do nothing)
 			similar_changes = Notification.where(
-				change_owner: owner, 
-				change_target: target, 
-				change_cancelled: false
+				owner: owner, 
+				target: target, 
+				cancelled: false
 				)
-			similar_changes.each do |change|
-				cancel_inverse_changes(change, change.change)
-				if change.cancelled?
-					similar_changes.delete(change)
+			puts 'size before inverses: ' + similar_changes.length.to_s
+			cancel_inverse_changes(similar_changes)
+			puts 'size after inverses: ' + similar_changes.length.to_s
+			return similar_changes
+		end
+
+		def self.cancel_inverse_changes(similar_changes)
+			similar_changes.map { |change| cancel_inverse_change(similar_changes, change)  }
+		end
+
+		def self.cancel_inverse_change(similar_changes, change)
+			similar_changes.each do |next_change|
+				if change.inverse_of?(next_change.change_type)
+					change.cancel
+					next_change.cancel
 				end
+				similar_changes.delete_if { |change| change.cancelled? }
 			end
-			
+			return similar_changes
 		end
-		def self.cancel_polar_change(change, change_type)
-			if change.inverse?(change_type)
-				change.cancel
-			end
+
+		def self.remove_inverse_changes(similar_changes, first_change, next_change)
+			similar_changes.delete([first_change])
+			similar_changes.delete([next_change])
+			return similar_changes
 		end
+
 		def self.populate_test_data
 			#move to spec
-			NotificationManager::Manager.notification('kyle', 'change1', 'work_id1', 'kylelawhorn@gmail.com')
-			NotificationManager::Manager.notification('kyle', 'change2', 'work_id2', 'kylelawhorn@gmail.com')
-			NotificationManager::Manager.notification('kyle', 'change3', 'work_id3', 'kylelawhorn@gmail.com')
-			NotificationManager::Manager.notification('glen', 'change4', 'work_id4', 'linda')
+			NotificationManager::Notification.new_notification('kyle', 'added_as_delegate', 'work_id1', 'kylelawhorn@gmail.com')
+			NotificationManager::Notification.new_notification('kyle', 'added_to_group', 'work_id2', 'kylelawhorn@gmail.com')
+			NotificationManager::Notification.new_notification('kyle', 'removed_as_editor', 'work_id3', 'kylelawhorn@gmail.com')
+			NotificationManager::Notification.new_notification('kyle', 'added_to_group', 'work_id4', 'kylelawhorn@gmail.com')
+			NotificationManager::Manager.notification('kyle', 'removed_as_delegate', 'work_id1', 'kylelawhorn@gmail.com')
 		end
 	end
 end

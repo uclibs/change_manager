@@ -14,12 +14,12 @@
 ActiveRecord::Schema.define(version: 20160420192850) do
 
   create_table "notification_manager_notifications", force: true do |t|
-    t.string   "change"
-    t.boolean  "change_cancelled"
-    t.datetime "change_notified"
-    t.string   "change_owner"
-    t.string   "change_target"
-    t.string   "change_context"
+    t.string   "change_type"
+    t.boolean  "cancelled"
+    t.datetime "notified"
+    t.string   "owner"
+    t.string   "target"
+    t.string   "context"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
