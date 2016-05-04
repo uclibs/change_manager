@@ -1,9 +1,7 @@
 module NotificationManager
 	class Manager
-		# NotificationManager::Manager.notification(args)
 		def self.notification(owner, change_type, context, target)
 			change_id = Notification.new_notification(owner, change_type, context, target)
-			# queue_job(change_id)
 			Resque.enqueue(MakeChange, change_id)
 			# Resque.enqueue_in(
 			# 	30.seconds,
@@ -15,19 +13,16 @@ module NotificationManager
 		# run populate_test_data from console
 		def self.notify(change_id)
 			puts 'the notify method was called'
-			unless NotificationManager::Notification.find(change_id).cancelled?
+			unless Notification.find(change_id).cancelled?
 				change = Notification.find(change_id)
-				byebug
-				similar_changes = group_similar_changes(change.owner, change.target, change.change_type)
+				similar_changes = group_similar_changes(change.owner, change.target)
 				puts 'group_similar_changes finished. size: ' + similar_changes.length.to_s
 				mailer = NotificationManager::NotificationMailer
-				if mailer.send_email(mailer.construct_email(similar_changes))
-					puts 'the email sent'
-				end
+				mailer.send_email(mailer.construct_email(similar_changes))
 			end
 		end
 
-		def self.group_similar_changes(owner, target, change_type)
+		def self.group_similar_changes(owner, target)
 			similar_changes = Notification.where(
 				owner: owner, 
 				target: target, 
@@ -41,6 +36,7 @@ module NotificationManager
 
 		def self.cancel_inverse_changes(similar_changes)
 			similar_changes.map { |change| cancel_inverse_change(similar_changes, change)  }
+			similar_changes.delete_if { |change| change.cancelled? }
 		end
 
 		def self.cancel_inverse_change(similar_changes, change)
@@ -49,14 +45,7 @@ module NotificationManager
 					change.cancel
 					next_change.cancel
 				end
-				similar_changes.delete_if { |change| change.cancelled? }
 			end
-			return similar_changes
-		end
-
-		def self.remove_inverse_changes(similar_changes, first_change, next_change)
-			similar_changes.delete([first_change])
-			similar_changes.delete([next_change])
 			return similar_changes
 		end
 

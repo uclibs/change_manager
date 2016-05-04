@@ -2,10 +2,10 @@
 
 FactoryGirl.define do
   factory :notification, :class => 'NotificationManager::Notification' do
-  	change_owner "email@test.com"
-  	change "added_as_delegate"
-  	change_context "1"
-  	change_target "spec@test.com"
-  	change_cancelled false
+  	owner "email@test.com"
+  	change_type "added_as_delegate"
+  	context "1"
+  	target "spec@test.com"
+  	cancelled false
   end
 end
