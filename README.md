@@ -61,4 +61,23 @@ If `change.inverse_of?(next_change)` returns true, it cancels both changes, then
 
 ### Specifying custom change types:
 
+The change types are currently only needed/loaded in the `inverse_of?` method. 
 
+Due to the way yaml works, any data type can be a change type, but the only data type that really makes sense in this context is a string - though don't let that stop you, I love repurposing code! - As long as you follow this format, your chagne types will be valid:
+
+Also, since the application only depends on the change types being stored in a dictionary of dictionaries, you don't necessarily need to use yaml as the backend storage of the change types. As long as you can serve them in the proper format, the application doesn't care.
+
+```
+change_type_name: # should be what you're calling your change type, ex. added_as_admin or removed_as_admin
+ print: change_type_name # prints the name as a string
+ inverse: inverse_change_type_name # specifies the inverse change
+ human_readable: Change Type Name # prints a human-readable string for use in views and mailers.
+...
+ ...
+ ...
+ ...
+```
+
+In this way, an inverse change is referenced from an array like this: `change_types[change_type_name]['inverse']`
+
+There are two optional attributes you can use, `print:` and `human_readable:`. These are not required for a change type. `inverse:` is.
