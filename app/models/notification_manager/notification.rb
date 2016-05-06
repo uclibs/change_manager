@@ -30,12 +30,10 @@ module NotificationManager
     def inverse_of?(possible_inverse_change)
       is_inverse = false
       @change_types ||= YAML.load_file(File.join(NotificationManager::Engine.root, 'config/change_types.yaml'))
-      if self.change_type == @change_types[possible_inverse_change]['inverse']
+      if self.change_type == @change_types[possible_inverse_change.change_type]['inverse']
         is_inverse = true
-        puts 'found inverse change' + self.owner + ' ' + self.change_type
       end
       return is_inverse
     end
-
   end
 end
