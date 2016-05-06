@@ -59,6 +59,10 @@ If there are no other changes that match this criteria, the change is packaged u
 
 If `change.inverse_of?(next_change)` returns true, it cancels both changes, then loops through the array one more time to remove them. In this way, if you have three or more inverse changes of the same type (i.e. owner adds target as a delegate, then removes target, then adds target again) it only cancels n - 1 chagnes and an email is still sent out.
 
+After the changes are all processed and any inverse changes are filtered out everything gets returns back up the stack to `notify`. `notify` then calls the `NotifictionMailer that prepares the email and sends it off. NotificationMailer is just an instance of ActionMailer and any questions about it should be directed to the ActionMailer documentation.
+
+By default (for now) the email is sent out in the form of a table.
+
 ### Specifying custom change types:
 
 The change types are currently only needed/loaded in the `inverse_of?` method. 
