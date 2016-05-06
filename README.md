@@ -42,7 +42,13 @@ Resque.enqueue_in(15.minutes, MakeChange, change_id)
 ...
 
 #make_change.rb:
-	def self.perform(change_id)
-		NotificationManager::Manager.notify(change_id)
-	end
+def self.perform(change_id)
+    NotificationManager::Manager.notify(change_id)
+end
 ```
+
+All this job does is call the `notify` method and passing it the id of the `Notification` object from before. The `notify` method does an initial check to see if the notification was cancelled. If it is cancelled, the flow ends there, nothing else happens. If it was not, it collects any other changes in an array from the database where the `owner` and `target` are the same and where `cancelled` is false.
+
+`similar_changes = Notification.where(owner: owner, target: target, cancelled: false)`
+
+If there are no other changes that match this criteria, the change is packaged up into an email and sent inside of a nicely formatted table to `target` (hence why target is generally an email address). If there are similar changes to be found, it passes it to another method in the Manager `cancel_inverse_changes`.
