@@ -5,7 +5,7 @@ While Resque itself is pretty simple to implement, this packages Resque, resque-
 
 ## Run-down of how NotificationManager works:
 I don't like complicated code. I don't think anyone does. Therefore, NotificationManager is written with a 'no nonsense' style. First, you must create a Notification object using `NotificationManager::Manager.notification()` like so:
-
+(app/services/notification_manager/manager.rb)
 ```
 NotificationManager::Manager.notification(owner, change_type, context, target)
 ```
@@ -19,3 +19,30 @@ NotificationManager::Manager.notification(owner, change_type, context, target)
 `context` - string. This value is also arbitrary and can be anything you want. It is intended to be used for an id of some Model. It's mostly application specific so that's about as specific as it gets. You can also pass it an empty string - context is not a required argument.
 
 `target` - string. This value is arbitrary and similar to `owner`: Can be whatever you want, but generally an email address or some sort of identifier. `target` is the entity on the receiving end of the change made by `owner`.
+
+___Real-world example:___
+
+`NotificationManager::Manager.notification('kyle', 'added_as_editor', 'some_random_id', 'chris')`
+
+Generates a Notification object with the attributes:
+
+```
+owner: 'kyle' 
+change_type: 'added_as_editor' 
+context: 'some_random_id' 
+target: 'chris'
+cancelled: cancelled #all notifications are not cancelled by default.
+```
+
+This works by calling the actual constructor for the `Notification` object and then scheduling the MakeChange job to be queued 15 minutes from the current date/time:
+
+```
+Resque.enqueue_in(15.minutes, MakeChange, change_id)
+
+...
+
+#make_change.rb:
+	def self.perform(change_id)
+		NotificationManager::Manager.notify(change_id)
+	end
+```
