@@ -10,6 +10,8 @@ I don't like complicated code. I don't think anyone does. Therefore, Notificatio
 NotificationManager::Manager.notification(owner, change_type, context, target)
 ```
 
+This is the only line you need to write to begin queueing notifications and using the gem. However the email format is purposefully generic and you may want to substitute your own views for it.
+
 ### Properties:
 
 `owner` - string. This value is arbitrary and is generally an email address, though you can use a `User` object if you create a custom Notification model (or modify the existing model). `owner` is the entity making the change to `target`
@@ -47,8 +49,16 @@ def self.perform(change_id)
 end
 ```
 
-All this job does is call the `notify` method and passing it the id of the `Notification` object from before. The `notify` method does an initial check to see if the notification was cancelled. If it is cancelled, the flow ends there, nothing else happens. If it was not, it collects any other changes in an array from the database where the `owner` and `target` are the same and where `cancelled` is false.
+All this job does is call the `notify` method and passing it the id of the `Notification` object from before. The `notify` method does an initial check to see if the notification was cancelled. If it is cancelled, the flow ends there, nothing else happens. If it was not, it passes the owner and target of the change to `group_similar_changes` which then collects any other changes in an array from the database where the `owner` and `target` are the same and where `cancelled` is false.
 
 `similar_changes = Notification.where(owner: owner, target: target, cancelled: false)`
 
 If there are no other changes that match this criteria, the change is packaged up into an email and sent inside of a nicely formatted table to `target` (hence why target is generally an email address). If there are similar changes to be found, it passes it to another method in the Manager `cancel_inverse_changes`.
+
+`cancel_inverse_changes` simply takes the array of similar changes and uses a nested loop to compare any two values in the array for inverse changes. Inverse changes are changes that undo each other in the context of my applications. It uses the comparison method `change.inverse_of?(next_change)` which returns true if the first change's change type is contained in the next change's `inverse:` dictionary.
+
+If `change.inverse_of?(next_change)` returns true, it cancels both changes, then loops through the array one more time to remove them. In this way, if you have three or more inverse changes of the same type (i.e. owner adds target as a delegate, then removes target, then adds target again) it only cancels n - 1 chagnes and an email is still sent out.
+
+### Specifying custom change types:
+
+
