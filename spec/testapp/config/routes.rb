@@ -1,4 +1,4 @@
 Rails.application.routes.draw do
 
-  mount NotificationManager::Engine => "/notification_manager"
+  mount ChangeManager::Engine => "/change_manager"
 end

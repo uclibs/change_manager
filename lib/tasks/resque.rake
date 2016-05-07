@@ -2,7 +2,7 @@
 require 'resque/tasks'
 require 'resque/scheduler/tasks'
 
-Rails.application.initialize!
+# Rails.application.initialize!
 
 namespace :resque do
 	task ":setup" => :environment

@@ -1,4 +1,4 @@
-module NotificationManager
+module ChangeManager
 	class Manager
 		def self.notification(owner, change_type, context, target)
 			change_id = Notification.new_notification(owner, change_type, context, target)
@@ -15,7 +15,7 @@ module NotificationManager
 			unless Notification.find(change_id).cancelled?
 				change = Notification.find(change_id)
 				similar_changes = group_similar_changes(change.owner, change.target)
-				mailer = NotificationManager::NotificationMailer
+				mailer = ChangeManager::NotificationMailer
 				mailer.send_email(mailer.construct_email(similar_changes))
 			end
 		end

@@ -1,4 +1,4 @@
-module NotificationManager
+module ChangeManager
 	class NotificationMailer < ActionMailer::Base
 		
 		def construct_email(changes)

@@ -1,6 +1,6 @@
-module NotificationManager
+module ChangeManager
   class Engine < ::Rails::Engine
-    isolate_namespace NotificationManager
+    isolate_namespace ChangeManager
 
     config.generators do |g|
 		g.test_framework :rspec, :fixture => false

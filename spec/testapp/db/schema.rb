@@ -13,7 +13,7 @@
 
 ActiveRecord::Schema.define(version: 20160420192850) do
 
-  create_table "notification_manager_notifications", force: true do |t|
+  create_table "change_manager_notifications", force: true do |t|
     t.string   "change_type"
     t.boolean  "cancelled"
     t.datetime "notified"

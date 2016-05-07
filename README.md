@@ -5,7 +5,7 @@ While Resque itself is pretty simple to implement, this packages Resque, resque-
 
 ## Run-down of how ChangeManager works:
 I don't like complicated code. I don't think anyone does. Therefore, ChangeManager is written with a 'no nonsense' style. First, you must create a Notification object using `ChangeManager::Manager.notification()` like so:
-(app/services/notification_manager/manager.rb)
+(app/services/change_manager/manager.rb)
 ```
 ChangeManager::Manager.notification(owner, change_type, context, target)
 ```
