@@ -1,5 +1,5 @@
 # Change Manager
-Change Manager is a simple all-in-one system for starting, storing, and comparing ActiveRecord objects using Resque and resque-scheduler. It also features and supports rspec. All tests in this gem are written with rspec. 
+Change Manager is a simple all-in-one system for starting, storing, and comparing changes to ActiveRecord objects using Resque and resque-scheduler. It also features and supports rspec. All tests in this gem are written with rspec. 
 
 While Resque itself is pretty simple to implement, this packages Resque, resque-scheduler together with some simple common sense logic for comparing objects. I wrote this to simplify some functionality in my own applications, so some of it is application-specific. However, I tried to construct this gem in a way that would make customization easy. ___I welcome anyone and everyone that happens to find this useful to add your own customizations to it. All you need to do is fork the repo, make your changes, and create a Pull Request.___ Understandably, I would like any customizations made to have matching specs.
 
