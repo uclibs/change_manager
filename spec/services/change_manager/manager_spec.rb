@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module NotificationManager
+module ChangeManager
 	describe Manager do
 		describe '#notification' do
 			let(:notification) { Manager.notification('test', 'removed_as_delegate', 'work_id1', 'testemail@gmail.com') }

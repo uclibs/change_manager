@@ -1,6 +1,6 @@
-class CreateNotificationManagerNotifications < ActiveRecord::Migration
+class CreateChangeManagerNotifications < ActiveRecord::Migration
   def change
-    create_table :notification_manager_notifications do |t|
+    create_table :change_manager_notifications do |t|
       t.string :change_type
       t.boolean :change_cancelled
       t.datetime :change_notified

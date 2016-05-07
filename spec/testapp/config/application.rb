@@ -8,7 +8,7 @@ require "sprockets/railtie"
 # require "rails/test_unit/railtie"
 
 Bundler.require(*Rails.groups)
-require "notification_manager"
+require "change_manager"
 
 module Testapp
   class Application < Rails::Application

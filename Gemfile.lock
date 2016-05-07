@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    notification_manager (0.0.1)
+    change_manager (0.0.1)
       rails (~> 4.0.13)
 
 GEM
@@ -158,8 +158,8 @@ PLATFORMS
 
 DEPENDENCIES
   byebug
+  change_manager!
   factory_girl_rails
-  notification_manager!
   resque
   resque-scheduler
   resque-web

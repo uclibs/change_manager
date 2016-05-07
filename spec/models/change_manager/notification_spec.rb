@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module NotificationManager
+module ChangeManager
   describe Notification do
     it 'has a valid factory' do
     	FactoryGirl.create(:notification).should be_valid
