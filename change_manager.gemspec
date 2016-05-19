@@ -10,8 +10,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Kyle Lawhorn"]
   s.email       = ["lawhorkl@mail.uc.edu"]
   s.homepage    = "http://www.thegeekycoder.com"
-  s.summary     = "TODO: Summary of ChangeManager."
-  s.description = "TODO: Description of ChangeManager."
+  s.summary     = "A resque-scheduler based system for comparing ActiveRecord objects and sending out notifications of the changes."
+  s.description = "ChangeManager uses Resque and resque-scheduler to detect changes in ActiveRecord objects, then applies logic to them."
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["spec/**/*"]

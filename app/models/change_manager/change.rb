@@ -1,10 +1,10 @@
 require 'yaml'
 
 module ChangeManager
-  class Notification < ActiveRecord::Base
-  	validates :change_type, :owner, :target, :context, presence: true
+  class Change < ActiveRecord::Base
+  	validates :change_type, :owner, :target, presence: true
 
-  	def self.new_notification(owner, change_type, context, target, cancelled = false)
+  	def self.new_change(owner, change_type, context, target, cancelled = false)
   		# needs a spec
   		# create object in db
   		# return object id

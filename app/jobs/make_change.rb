@@ -1,11 +1,9 @@
 class MakeChange
 	def self.queue
-		:notification
+		:change
 	end
 
 	def self.perform(change_id)
-		puts 'job started'
-		puts 'change is made to ' + change_id.to_s if ChangeManager::Manager.notify(change_id)
-		puts 'job finished'
+	    ChangeManager::Manager.notify(change_id)
 	end
 end

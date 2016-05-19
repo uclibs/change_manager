@@ -1,27 +1,26 @@
 module ChangeManager
 	class Manager
-		def self.notification(owner, change_type, context, target)
-			change_id = Notification.new_notification(owner, change_type, context, target)
-			Resque.enqueue(MakeChange, change_id)
-			# Resque.enqueue_in(
-			# 	30.seconds,
-			# 	MakeChange,
-			# 	change_id
-			# 	)
+		def self.queue_change(owner, change_type, context, target)
+			change_id = Change.new_change(owner, change_type, context, target)
+			# Resque.enqueue(MakeChange, change_id)
+			Resque.enqueue_in(30.seconds, MakeChange, change_id)
 		end
 
 		def self.notify(change_id)
-			puts 'the notify method was called'
-			unless Notification.find(change_id).cancelled?
-				change = Notification.find(change_id)
-				similar_changes = group_similar_changes(change.owner, change.target)
-				mailer = ChangeManager::NotificationMailer
-				mailer.send_email(mailer.construct_email(similar_changes))
+			unless Change.find(change_id).cancelled?
+				change = Change.find(change_id)
+				verified_changes = process_changes(change)
+				notify_users(verified_changes) unless verified_changes.empty?
 			end
 		end
 
+		private
+		def self.process_changes(change)
+			cancel_all_changes(group_similar_changes(change.owner, change.target))
+		end
+
 		def self.group_similar_changes(owner, target)
-			similar_changes = Notification.where(owner: owner, target: target, cancelled: false)
+			similar_changes = Change.where(owner: owner, target: target, cancelled: false)
 			if similar_changes.length > 1
 				cancel_inverse_changes(similar_changes)
 			end
@@ -40,5 +39,18 @@ module ChangeManager
 			end
 			return similar_changes
 		end
+
+		def self.cancel_all_changes(verified_changes)
+			verified_changes.each do |change|
+				change.cancel
+			end
+			verified_changes
+		end
+
+		def self.notify_users(changes)
+			mailer = ChangeManager::NotificationMailer
+			mailer.send_email(mailer.construct_email(changes))
+		end
+
 	end
 end
