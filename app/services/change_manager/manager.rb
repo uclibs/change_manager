@@ -49,8 +49,13 @@ module ChangeManager
 
 		def self.notify_users(changes)
 			mailer = ChangeManager::NotificationMailer
-			mailer.send_email(mailer.construct_email(changes))
+			if mailer.send_email(mailer.construct_email(changes))
+				changes.each do |change|
+					change.notify
+				end
+				return true
+			end
+			false
 		end
-
 	end
 end

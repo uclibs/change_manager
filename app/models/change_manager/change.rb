@@ -13,7 +13,8 @@ module ChangeManager
         change_type: change_type, 
         context: context, 
         target: target, 
-        cancelled: cancelled
+        cancelled: cancelled,
+        notified: false
         })
   		foo.id
   	end
@@ -23,17 +24,26 @@ module ChangeManager
       self.save
     end
 
+    def notify
+      self.notified = true
+      self.save
+    end
+
     def cancelled?
       self.cancelled
     end
 
+    def notified?
+      self.notified
+    end
+
     def inverse_of?(possible_inverse_change)
-      is_inverse = false
       @change_types ||= YAML.load_file(File.join(ChangeManager::Engine.root, 'config/change_types.yaml'))
-      if self.change_type == @change_types[possible_inverse_change.change_type]['inverse']
-        is_inverse = true
+      if self.context == possible_inverse_change.context
+        self.change_type == @change_types[possible_inverse_change.change_type]['inverse']
+      else 
+        false
       end
-      return is_inverse
     end
   end
 end
