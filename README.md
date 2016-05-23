@@ -4,10 +4,11 @@ Change Manager is a simple all-in-one system for starting, storing, and comparin
 While Resque itself is pretty simple to implement, this packages Resque, resque-scheduler together with some simple common sense logic for comparing objects. I wrote this to simplify some functionality in my own applications, so some of it is application-specific. However, I tried to construct this gem in a way that would make customization easy. ___I welcome anyone and everyone that happens to find this useful to add your own customizations to it. All you need to do is fork the repo, make your changes, and create a Pull Request.___ Understandably, I would like any customizations made to have matching specs.
 
 ## Run-down of how ChangeManager works:
-I don't like complicated code. I don't think anyone does. Therefore, ChangeManager is written with a 'no nonsense' style. First, you must create a Notification object using `ChangeManager::Manager.notification()` like so:
+I don't like complicated code. I don't think anyone does. Therefore, ChangeManager is written with a 'no nonsense' style. First, you must create a `Change` object using `ChangeManager::Manager.queue_change()` like so:
 (app/services/change_manager/manager.rb)
+
 ```
-ChangeManager::Manager.notification(owner, change_type, context, target)
+ChangeManager::Manager.queue_change(owner, change_type, context, target)
 ```
 
 This is the only line you need to write to begin queueing notifications and using the gem. However the email format is purposefully generic and you may want to substitute your own views for it.
@@ -24,9 +25,9 @@ This is the only line you need to write to begin queueing notifications and usin
 
 ___Real-world example:___
 
-`ChangeManager::Manager.notification('kyle', 'added_as_editor', 'some_random_id', 'chris')`
+`ChangeManager::Manager.queue_change('kyle', 'added_as_editor', 'some_random_id', 'chris')`
 
-Generates a Notification object with the attributes:
+Generates a `Change` object with the attributes:
 
 ```
 owner: 'kyle' 
@@ -36,28 +37,32 @@ target: 'chris'
 cancelled: cancelled #all notifications are not cancelled by default.
 ```
 
-This works by calling the actual constructor for the `Notification` object and then scheduling the MakeChange job to be queued 15 minutes from the current date/time:
+This works by calling the actual constructor for the `Change` object and then scheduling the `BeginChange` job to be queued 15 minutes from the current date/time:
 
 ```
-Resque.enqueue_in(15.minutes, MakeChange, change_id)
+Resque.enqueue_in(15.minutes, BeginChange, change_id)
 
 ...
 
-#make_change.rb:
+#begin_change.rb:
 def self.perform(change_id)
-    ChangeManager::Manager.notify(change_id)
+    ChangeManager::Manager.process_change(change_id)
 end
 ```
 
-All this job does is call the `notify` method and passing it the id of the `Notification` object from before. The `notify` method does an initial check to see if the notification was cancelled. If it is cancelled, the flow ends there, nothing else happens. If it was not, it passes the owner and target of the change to `group_similar_changes` which then collects any other changes in an array from the database where the `owner` and `target` are the same and where `cancelled` is false.
+All this job does is call the `process_change` method and passing it the id of the `Change` object from before. The `process_change` method does an initial check to see if the `Change` was cancelled. If it is cancelled, the flow ends there, nothing else happens. If it was not, it passes the owner and target of the change to `process_changes` which is just a wrapper for two different methods: `group_similar_changes` and `cancel_all_changes`.
+
+`group_similar_changes` collects changes in an array from the database where the `owner` and `target` are the same as the initial change and where `cancelled` is false.
 
 `similar_changes = Change.where(owner: owner, target: target, cancelled: false)`
 
-If there are no other changes that match this criteria, the change is packaged up into an email and sent inside of a nicely formatted table to `target` (hence why target is generally an email address). If there are similar changes to be found, it passes it to another method in the Manager `cancel_inverse_changes`.
+If there are no other changes that match this criteria, the array is returned back up to `cancel_all_changes` which cancels the change, and sends it back up the stack, eventually leading to an email with a nicely formatted table to `target` (hence why target is generally an email address). If there are similar changes to be found, it passes it to another method in the Manager `cancel_inverse_changes`.
 
 `cancel_inverse_changes` simply takes the array of similar changes and uses a nested loop to compare any two values in the array for inverse changes. Inverse changes are changes that undo each other in the context of my applications. It uses the comparison method `change.inverse_of?(next_change)` which returns true if the first change's change type is contained in the next change's `inverse:` dictionary.
 
 If `change.inverse_of?(next_change)` returns true, it cancels both changes, then loops through the array one more time to remove them. In this way, if you have three or more inverse changes of the same type (i.e. owner adds target as a delegate, then removes target, then adds target again) it only cancels n - 1 chagnes and an email is still sent out.
+
+After `group_similar_changes` and `inverse_of?` vet out any inverse changes, it then returns back up the stack to `cancel_all_changes` which cancels every change in the array and returns back to `process_changes` and so on to `process_change`. `process_change` then sends the array to the `notify` method whic grabs the `Change`'s from it, formats it into an action mailer, and sends it out. The `Change`'s `notified` value is updated to the date and time at the moment of emil delivery.
 
 After the changes are all processed and any inverse changes are filtered out everything gets returns back up the stack to `notify`. `notify` then calls the `NotifictionMailer that prepares the email and sends it off. NotificationMailer is just an instance of ActionMailer and any questions about it should be directed to the ActionMailer documentation.
 
