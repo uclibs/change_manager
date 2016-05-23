@@ -64,8 +64,6 @@ If `change.inverse_of?(next_change)` returns true, it cancels both changes, then
 
 After `group_similar_changes` and `inverse_of?` vet out any inverse changes, it then returns back up the stack to `cancel_all_changes` which cancels every change in the array and returns back to `process_changes` and so on to `process_change`. `process_change` then sends the array to the `notify` method whic grabs the `Change`'s from it, formats it into an action mailer, and sends it out. The `Change`'s `notified` value is updated to the date and time at the moment of emil delivery.
 
-After the changes are all processed and any inverse changes are filtered out everything gets returns back up the stack to `notify`. `notify` then calls the `NotifictionMailer that prepares the email and sends it off. NotificationMailer is just an instance of ActionMailer and any questions about it should be directed to the ActionMailer documentation.
-
 By default (for now) the email is sent out in the form of a table.
 
 ### Specifying custom change types:
