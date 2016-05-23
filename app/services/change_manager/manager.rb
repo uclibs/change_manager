@@ -3,14 +3,14 @@ module ChangeManager
 		def self.queue_change(owner, change_type, context, target)
 			change_id = Change.new_change(owner, change_type, context, target)
 			# Resque.enqueue(MakeChange, change_id)
-			Resque.enqueue_in(30.seconds, MakeChange, change_id)
+			Resque.enqueue_in(30.seconds, ChangeManager::BeginChange, change_id)
 		end
 
-		def self.notify(change_id)
+		def self.process_change(change_id)
 			unless Change.find(change_id).cancelled?
-				change = Change.find(change_id)
-				verified_changes = process_changes(change)
-				notify_users(verified_changes) unless verified_changes.empty?
+				change = Change.find change_id
+				verified_changes = process_changes change
+				notify verified_changes unless verified_changes.empty?
 			end
 		end
 
@@ -47,7 +47,7 @@ module ChangeManager
 			verified_changes
 		end
 
-		def self.notify_users(changes)
+		def self.notify(changes)
 			mailer = ChangeManager::NotificationMailer
 			if mailer.send_email(mailer.construct_email(changes))
 				changes.each do |change|

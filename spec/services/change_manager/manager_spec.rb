@@ -8,14 +8,14 @@ module ChangeManager
 				queued_change.should be_true
 			end
 		end
-		describe '#notify' do
+		describe '#process_change' do
 			let(:cancelled_change) { FactoryGirl.create(:change, cancelled: true)}
 			let(:change) { FactoryGirl.create(:change) }
 			it 'should do nothing if initial change is cancelled' do
-				Manager.notify(cancelled_change.id).should be_nil
+				Manager.process_change(cancelled_change.id).should be_nil
 			end
 			it 'should execute if initial change isn\'t cancelled' do
-				Manager.notify(change.id).should_not be_nil
+				Manager.process_change(change.id).should_not be_nil
 			end
 		end
 		describe '#group_similar_changes:' do

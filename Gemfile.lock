@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    change_manager (0.0.8)
+    change_manager (0.1.2)
       rails (~> 4.0.13)
 
 GEM

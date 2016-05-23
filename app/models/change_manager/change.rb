@@ -14,7 +14,7 @@ module ChangeManager
         context: context, 
         target: target, 
         cancelled: cancelled,
-        notified: false
+        notified: nil
         })
   		foo.id
   	end
@@ -25,7 +25,7 @@ module ChangeManager
     end
 
     def notify
-      self.notified = true
+      self.notified = DateTime.now
       self.save
     end
 
