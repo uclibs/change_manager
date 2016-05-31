@@ -3,7 +3,7 @@ module ChangeManager
 		def self.queue_change(owner, change_type, context, target)
 			change_id = Change.new_change(owner, change_type, context, target)
 			# Resque.enqueue(MakeChange, change_id)
-			Resque.enqueue_in(30.seconds, ChangeManager::BeginChange, change_id)
+			Resque.enqueue_in(5.minutes, ChangeManager::BeginChange, change_id)
 		end
 
 		def self.process_change(change_id)
@@ -33,6 +33,7 @@ module ChangeManager
 					if change.inverse_of?(next_change)
 						change.cancel
 						next_change.cancel
+						puts 'cancelled inverse changes ' + change.change_type + ' and ' + next_change.change_type
 						similar_changes.delete_if { |change| change.cancelled? }
 					end
 				end
