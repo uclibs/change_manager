@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 module ChangeManager
-	describe Manager do
+	describe LocalManager do
 		describe '#queue_change' do
-			let(:queued_change) { Manager.queue_change('test', 'removed_as_delegate', 'work_id1', 'testemail@gmail.com') }
+			let(:queued_change) { LocalManager.queue_change('test', 'removed_as_delegate', 'work_id1', 'testemail@gmail.com') }
 			it 'should spawn a background worker' do
 				queued_change.should be_true
 			end
@@ -12,15 +12,15 @@ module ChangeManager
 			let(:cancelled_change) { FactoryGirl.create(:change, cancelled: true)}
 			let(:change) { FactoryGirl.create(:change) }
 			it 'should do nothing if initial change is cancelled' do
-				Manager.process_change(cancelled_change.id).should be_nil
+				LocalManager.process_change(cancelled_change.id).should be_nil
 			end
 			it 'should execute if initial change isn\'t cancelled' do
-				Manager.process_change(change.id).should_not be_nil
+				LocalManager.process_change(change.id).should_not be_nil
 			end
 		end
 		describe '#group_similar_changes:' do
 			let!(:initial_change) { Change.find(Change.new_change('owner', 'added_as_editor', 'work_id1', 'target'))}
-			let(:possible_similar_changes) { Manager.group_similar_changes(initial_change.owner, initial_change.target) }
+			let(:possible_similar_changes) { LocalManager.group_similar_changes(initial_change.owner, initial_change.target) }
 		# describe the different changes
 			# unrelated changes (owner and target aren't the same as initial - cancelled doesnt matter)
 			context 'unrelated changes' do

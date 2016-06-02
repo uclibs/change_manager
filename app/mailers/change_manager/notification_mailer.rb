@@ -1,12 +1,14 @@
+require 'yaml'
+
 module ChangeManager
 	class NotificationMailer < ActionMailer::Base
-		
+		CONFIG ||= YAML.load_file(File.join(Rails.root, 'config/change_manager_config.yml'))
 		def construct_email(changes)
 			@body = prepare_body(changes)
 			mail(
 				to: changes.first.target,
 				from: changes.first.owner,
-				subject: 'Updates from Scholar@UC',
+				subject: 'Recent Updates from ' + CONFIG['site_name'],
 				)
 		end
 
