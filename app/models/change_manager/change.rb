@@ -2,6 +2,7 @@ require 'yaml'
 
 module ChangeManager
   class Change < ActiveRecord::Base
+    include ComparisonConcern
   	validates :change_type, :owner, :target, presence: true
 
   	def self.new_change(owner, change_type, context, target, cancelled = false)
@@ -37,20 +38,8 @@ module ChangeManager
       self.notified
     end
 
-    def is_group_change?
-      self.change_type == 'added_to_group' || self.change_type == 'removed_from_group'
-    end
-
-    def is_delegate_change?
-      self.change_type == 'added_as_delegate' || self.change_type == 'removed_as_delegate'
-    end
-
-    def is_editor_change?
-      self.change_type == 'added_as_editor' || self.change_type == 'removed_as_editor'
-    end
-
     def inverse_of?(possible_inverse_change)
-      @change_types ||= YAML.load_file(File.join(ChangeManager::Engine.root, 'config/change_types.yaml'))
+      @change_types ||= YAML.load_file(File.join(ChangeManager::Engine.root, 'config/change_types.yml'))
       if self.context == possible_inverse_change.context
         self.change_type == @change_types[possible_inverse_change.change_type]['inverse']
       else 
