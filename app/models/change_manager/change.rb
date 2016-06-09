@@ -2,7 +2,6 @@ require 'yaml'
 
 module ChangeManager
   class Change < ActiveRecord::Base
-    include ComparisonConcern
   	validates :change_type, :owner, :target, presence: true
 
   	def self.new_change(owner, change_type, context, target, cancelled = false)
@@ -35,7 +34,10 @@ module ChangeManager
     end
 
     def notified?
-      self.notified
+      if self.notified.nil?
+        return false
+      end
+      true
     end
 
     def inverse_of?(possible_inverse_change)
@@ -46,5 +48,8 @@ module ChangeManager
         false
       end
     end
+
+
+
   end
 end

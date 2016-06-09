@@ -7,5 +7,7 @@ FactoryGirl.define do
   	context "1"
   	target "spec@test.com"
   	cancelled false
+  	notified nil
+
   end
 end

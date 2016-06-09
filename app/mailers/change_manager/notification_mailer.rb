@@ -21,7 +21,6 @@ module ChangeManager
 			body = ''
 			footer = '</table>'
 			changes.each do |change|
-				#may need a look up method from curate here
 				body += '<tr><td>' + 
 				change.owner + '</td><td>' + 
 				change.context + '</td><td>' + 
