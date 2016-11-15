@@ -48,8 +48,5 @@ module ChangeManager
         false
       end
     end
-
-
-
   end
 end

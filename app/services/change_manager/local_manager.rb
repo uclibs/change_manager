@@ -1,5 +1,5 @@
 module ChangeManager
-	class LocalManager
-		extend Manager
-	end
+  class LocalManager
+    extend Manager
+  end
 end
