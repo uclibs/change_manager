@@ -10,15 +10,13 @@ Gem::Specification.new do |s|
   s.authors     = ["Kyle Lawhorn"]
   s.email       = ["lawhorkl@mail.uc.edu"]
   s.homepage    = "http://www.thegeekycoder.com"
-  s.summary     = "A resque-scheduler based system for comparing ActiveRecord objects and sending out notifications of the changes."
-  s.description = "ChangeManager uses Resque and resque-scheduler to detect changes in ActiveRecord objects, then applies logic to them."
+  s.summary     = "An ActiveJob-based system for comparing ActiveRecord objects and sending out notifications of the changes."
+  s.description = "ChangeManager uses ActiveJob and the queueing engine of your choice to detect changes in ActiveRecord objects, and then apply logic to them."
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["spec/**/*"]
 
   s.add_dependency "rails"
-  s.add_dependency 'resque'
-  s.add_dependency 'resque-scheduler'
   s.add_development_dependency 'byebug'
   s.add_development_dependency "sqlite3"
 #testing frameworks

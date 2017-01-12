@@ -2,7 +2,7 @@ module ChangeManager
 	module Manager
 		def queue_change(owner, change_type, context, target)
 			change_id = Change.new_change(owner, change_type, context, target)
-			Resque.enqueue_in(15.minutes, ChangeManager::BeginChange, change_id)
+			ChangeManager::ProcessChangeJob.set(wait: 30.seconds).perform_later change_id
 		end
 
 		def process_change(change_id)
