@@ -1,11 +1,9 @@
 require 'yaml'
 module ChangeManager
-  class BeginChange
-    def self.queue
-      :change
-    end
+  class ProcessChangeJob < ActiveJob::Base
+    queue_as :default
 
-    def self.perform(change_id)
+    def perform(change_id)
       config ||= YAML.load_file(File.join(Rails.root, 'config/change_manager_config.yml'))
       config['manager_class'].constantize.process_change(change_id)
     end
