@@ -9,10 +9,10 @@ module ChangeManager
   		# create object in db
   		# return object id
   		foo = self.create({
-        owner: owner, 
-        change_type: change_type, 
-        context: context, 
-        target: target, 
+        owner: owner,
+        change_type: change_type,
+        context: context,
+        target: target,
         cancelled: cancelled,
         notified: nil
         })
@@ -41,10 +41,10 @@ module ChangeManager
     end
 
     def inverse_of?(possible_inverse_change)
-      @change_types ||= YAML.load_file(File.join(ChangeManager::Engine.root, 'config/change_types.yml'))
+      @change_types ||= YAML.load_file(File.join(Rails.application.root, 'config/change_types.yml'))
       if self.context == possible_inverse_change.context
         self.change_type == @change_types[possible_inverse_change.change_type]['inverse']
-      else 
+      else
         false
       end
     end

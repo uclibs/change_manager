@@ -3,7 +3,7 @@ module ChangeManager
 
     def queue_change(owner, change_type, context, target)
       change_id = Change.new_change(owner, change_type, context, target)
-      ChangeManager::ProcessChangeJob.set(wait: 15.minutes).perform_later(change_id)
+      ChangeManager::ProcessChangeJob.set(wait: 15.seconds).perform_later(change_id)
     end
 
     def process_change(change_id)
@@ -28,6 +28,7 @@ module ChangeManager
     def cancel_inverse_changes_in(similar_changes)
       similar_changes.each do |change|
         similar_changes.each do |next_change|
+          # byebug
           if change.inverse_of?(next_change)
             change.cancel
             next_change.cancel

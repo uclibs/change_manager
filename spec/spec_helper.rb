@@ -5,8 +5,7 @@ require 'rspec/rails'
 require 'rspec/autorun'
 require 'factory_girl_rails'
 require 'byebug'
-require 'resque'
-require 'resque-scheduler'
+
 Rails.backtrace_cleaner.remove_silencers!
 
 # Load support files
