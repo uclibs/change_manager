@@ -28,11 +28,10 @@ module ChangeManager
     def cancel_inverse_changes_in(similar_changes)
       similar_changes.each do |change|
         similar_changes.each do |next_change|
-          # byebug
           if change.inverse_of?(next_change)
             change.cancel
             next_change.cancel
-            similar_changes.delete_if { |change| change.cancelled? }
+            similar_changes.to_a.delete_if { |change| change.cancelled? }
           end
         end
       end
