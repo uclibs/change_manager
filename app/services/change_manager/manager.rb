@@ -17,7 +17,7 @@ module ChangeManager
 
     def process_changes_similar_to(change)
       similar_changes = group_similar_changes(change.owner, change.target)
-      cancel_inverse_changes_in similar_changes if similar_changes.length > 1
+      similar_changes = cancel_inverse_changes_in similar_changes if similar_changes.length > 1
       similar_changes
     end
 
@@ -26,15 +26,13 @@ module ChangeManager
     end
 
     def cancel_inverse_changes_in(similar_changes)
-      similar_changes.each do |change|
-        similar_changes.each do |next_change|
-          # byebug
-          if change.inverse_of?(next_change)
+      similar_changes.each_with_index do |change, index|
+          next_change = similar_changes[index+1]
+          if next_change != nil and change.inverse_of?(next_change)
             change.cancel
             next_change.cancel
-            similar_changes.delete_if { |change| change.cancelled? }
+            similar_changes = similar_changes.to_a.delete_if { |change| change.cancelled? }
           end
-        end
       end
       similar_changes
     end
